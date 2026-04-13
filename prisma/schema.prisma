@@ -443,6 +443,10 @@ enum BillingType {
   monthly
   yearly
   quarterly
+  hourly
+  daily
+  fixed
+  unit
 }
 
 enum OfferStatus {
@@ -451,20 +455,27 @@ enum OfferStatus {
 }
 
 model Offer {
-  id            String      @id @default(uuid())
-  userId        String      @map("user_id")
-  title         String
-  description   String?
-  category      String?
-  price         Float
-  originalPrice Float?      @map("original_price")
-  currency      String      @default("EUR")
-  billingType   BillingType @default(one_time) @map("billing_type")
-  status        OfferStatus @default(active)
-  imageUrl      String?     @map("image_url")
-  features      String[]    @default([])
-  createdAt     DateTime    @default(now()) @map("created_at")
-  updatedAt     DateTime    @updatedAt @map("updated_at")
+  id             String      @id @default(uuid())
+  userId         String      @map("user_id")
+  title          String
+  description    String?
+  category       String?
+  price          Float?
+  originalPrice  Float?      @map("original_price")
+  currency       String      @default("EUR")
+  billingType    BillingType @default(one_time) @map("billing_type")
+  duration       String?
+  hourlyRate     Float?      @map("hourly_rate")
+  estimatedHours Float?      @map("estimated_hours")
+  dailyRate      Float?      @map("daily_rate")
+  estimatedDays  Float?      @map("estimated_days")
+  unitPrice      Float?      @map("unit_price")
+  quantity       Int?
+  status         OfferStatus @default(active)
+  imageUrl       String?     @map("image_url")
+  features       String[]    @default([])
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
 
   user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   offerPackItems OfferPackItem[]
@@ -480,7 +491,7 @@ model OfferPack {
   userId             String      @map("user_id")
   name               String
   description        String?
-  price              Float
+  price              Float?
   discountPercentage Float?      @map("discount_percentage")
   status             OfferStatus @default(active)
   imageUrl           String?     @map("image_url")

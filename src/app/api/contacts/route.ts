@@ -5,24 +5,48 @@ import { notifyContactCreated } from "@/lib/notifications";
 import { syncEventKpis } from "@/lib/eventKpis";
 import { mapContact } from "@/lib/apiMappers";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const session = await auth();
   if (!session?.user?.id)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    const contacts = await prisma.contact.findMany({
-      where: { userId: session.user.id },
-      orderBy: { createdAt: "desc" },
-      include: {
-        contactEvents: {
-          include: { event: { select: { id: true, name: true } } },
+    const { searchParams } = new URL(request.url);
+    const eventId = searchParams.get("eventId");
+
+    let contacts;
+    if (eventId) {
+      // Fetch contacts linked to a specific event
+      const contactEvents = await prisma.contactEvent.findMany({
+        where: { eventId, contact: { userId: session.user.id } },
+        include: {
+          contact: {
+            include: {
+              contactEvents: {
+                include: { event: { select: { id: true, name: true } } },
+              },
+              _count: {
+                select: { opportunities: true, followUps: true, interactions: true },
+              },
+            },
+          },
         },
-        _count: {
-          select: { opportunities: true, followUps: true, interactions: true },
+      });
+      contacts = contactEvents.map((ce) => ce.contact);
+    } else {
+      contacts = await prisma.contact.findMany({
+        where: { userId: session.user.id },
+        orderBy: { createdAt: "desc" },
+        include: {
+          contactEvents: {
+            include: { event: { select: { id: true, name: true } } },
+          },
+          _count: {
+            select: { opportunities: true, followUps: true, interactions: true },
+          },
         },
-      },
-    });
+      });
+    }
 
     return NextResponse.json({ contacts: contacts.map(mapContact) });
   } catch (error) {

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { toSnakeCase } from "@/lib/apiMappers";
+import { mapOffer } from "@/lib/apiMappers";
 
 // PUT /api/offer-packs/[id]
 export async function PUT(
@@ -54,7 +54,7 @@ export async function PUT(
       include: { items: { include: { offer: true } } },
     });
 
-    return NextResponse.json(toSnakeCase(updated));
+    return NextResponse.json(mapOffer(updated));
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(
@@ -91,3 +91,5 @@ export async function DELETE(
     );
   }
 }
+
+export { PUT as PATCH };

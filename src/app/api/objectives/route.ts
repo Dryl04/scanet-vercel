@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
       orderBy: [{ priority: "desc" }, { createdAt: "desc" }],
     });
 
-    return NextResponse.json(objectives.map(toSnakeCase));
+    return NextResponse.json({ objectives: objectives.map(toSnakeCase) });
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(

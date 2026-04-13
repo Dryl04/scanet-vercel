@@ -5,15 +5,15 @@
 
 function camelToSnakeKey(key: string): string {
   // Don't convert keys that start with underscore (like _count)
-  if (key.startsWith('_')) return key;
-  return key.replace(/([A-Z])/g, '_$1').toLowerCase();
+  if (key.startsWith("_")) return key;
+  return key.replace(/([A-Z])/g, "_$1").toLowerCase();
 }
 
 export function toSnakeCase(obj: any): any {
   if (obj === null || obj === undefined) return obj;
   if (obj instanceof Date) return obj.toISOString();
   if (Array.isArray(obj)) return obj.map(toSnakeCase);
-  if (typeof obj !== 'object') return obj;
+  if (typeof obj !== "object") return obj;
 
   const result: Record<string, any> = {};
   for (const [key, value] of Object.entries(obj)) {
@@ -56,6 +56,15 @@ export function mapEvent(e: any) {
 
 export function mapOpportunity(o: any) {
   return toSnakeCase(o);
+}
+
+export function mapOffer(o: any) {
+  const mapped = toSnakeCase(o);
+  // Component expects is_active boolean, Prisma uses status enum
+  if (o.status !== undefined) {
+    mapped.is_active = o.status === "active";
+  }
+  return mapped;
 }
 
 export function mapNotification(n: any) {
