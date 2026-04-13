@@ -51,10 +51,15 @@ export async function POST(request: NextRequest) {
         currency: body.currency || "EUR",
         billingType,
         duration: body.duration,
-        hourlyRate: body.hourly_rate != null ? parseFloat(body.hourly_rate) : null,
-        estimatedHours: body.estimated_hours != null ? parseFloat(body.estimated_hours) : null,
+        hourlyRate:
+          body.hourly_rate != null ? parseFloat(body.hourly_rate) : null,
+        estimatedHours:
+          body.estimated_hours != null
+            ? parseFloat(body.estimated_hours)
+            : null,
         dailyRate: body.daily_rate != null ? parseFloat(body.daily_rate) : null,
-        estimatedDays: body.estimated_days != null ? parseFloat(body.estimated_days) : null,
+        estimatedDays:
+          body.estimated_days != null ? parseFloat(body.estimated_days) : null,
         unitPrice: body.unit_price != null ? parseFloat(body.unit_price) : null,
         quantity: body.quantity != null ? parseInt(body.quantity) : null,
         status,

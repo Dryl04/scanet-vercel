@@ -26,7 +26,11 @@ export async function GET(request: NextRequest) {
                 include: { event: { select: { id: true, name: true } } },
               },
               _count: {
-                select: { opportunities: true, followUps: true, interactions: true },
+                select: {
+                  opportunities: true,
+                  followUps: true,
+                  interactions: true,
+                },
               },
             },
           },
@@ -42,7 +46,11 @@ export async function GET(request: NextRequest) {
             include: { event: { select: { id: true, name: true } } },
           },
           _count: {
-            select: { opportunities: true, followUps: true, interactions: true },
+            select: {
+              opportunities: true,
+              followUps: true,
+              interactions: true,
+            },
           },
         },
       });

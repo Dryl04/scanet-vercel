@@ -93,8 +93,9 @@ export function EventProfile({ eventId, onBack, onContactSelect }: EventProfileP
             const res = await fetch(`/api/events/${eventId}`);
             if (!res.ok) throw new Error('Failed to load event');
             const data = await res.json();
-            setEvent(data.event);
-            setEditedEvent(data.event || {});
+            const eventData = data.event || data;
+            setEvent(eventData);
+            setEditedEvent(eventData || {});
         } catch (error) {
             console.error('Error loading event:', error);
         } finally {

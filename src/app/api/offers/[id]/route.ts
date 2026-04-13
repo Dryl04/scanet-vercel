@@ -55,21 +55,38 @@ export async function PUT(
 
     const updateData: Record<string, unknown> = {};
     if (body.title !== undefined) updateData.title = body.title;
-    if (body.description !== undefined) updateData.description = body.description;
+    if (body.description !== undefined)
+      updateData.description = body.description;
     if (body.category !== undefined) updateData.category = body.category;
-    if (body.price !== undefined) updateData.price = body.price != null ? parseFloat(body.price) : null;
-    if (body.originalPrice !== undefined || body.original_price !== undefined) updateData.originalPrice = body.originalPrice ?? body.original_price;
+    if (body.price !== undefined)
+      updateData.price = body.price != null ? parseFloat(body.price) : null;
+    if (body.originalPrice !== undefined || body.original_price !== undefined)
+      updateData.originalPrice = body.originalPrice ?? body.original_price;
     if (body.currency !== undefined) updateData.currency = body.currency;
-    if (body.billingType !== undefined || body.billing_type !== undefined) updateData.billingType = body.billingType ?? body.billing_type;
+    if (body.billingType !== undefined || body.billing_type !== undefined)
+      updateData.billingType = body.billingType ?? body.billing_type;
     if (body.duration !== undefined) updateData.duration = body.duration;
-    if (body.hourly_rate !== undefined) updateData.hourlyRate = body.hourly_rate != null ? parseFloat(body.hourly_rate) : null;
-    if (body.estimated_hours !== undefined) updateData.estimatedHours = body.estimated_hours != null ? parseFloat(body.estimated_hours) : null;
-    if (body.daily_rate !== undefined) updateData.dailyRate = body.daily_rate != null ? parseFloat(body.daily_rate) : null;
-    if (body.estimated_days !== undefined) updateData.estimatedDays = body.estimated_days != null ? parseFloat(body.estimated_days) : null;
-    if (body.unit_price !== undefined) updateData.unitPrice = body.unit_price != null ? parseFloat(body.unit_price) : null;
-    if (body.quantity !== undefined) updateData.quantity = body.quantity != null ? parseInt(body.quantity) : null;
+    if (body.hourly_rate !== undefined)
+      updateData.hourlyRate =
+        body.hourly_rate != null ? parseFloat(body.hourly_rate) : null;
+    if (body.estimated_hours !== undefined)
+      updateData.estimatedHours =
+        body.estimated_hours != null ? parseFloat(body.estimated_hours) : null;
+    if (body.daily_rate !== undefined)
+      updateData.dailyRate =
+        body.daily_rate != null ? parseFloat(body.daily_rate) : null;
+    if (body.estimated_days !== undefined)
+      updateData.estimatedDays =
+        body.estimated_days != null ? parseFloat(body.estimated_days) : null;
+    if (body.unit_price !== undefined)
+      updateData.unitPrice =
+        body.unit_price != null ? parseFloat(body.unit_price) : null;
+    if (body.quantity !== undefined)
+      updateData.quantity =
+        body.quantity != null ? parseInt(body.quantity) : null;
     if (status !== undefined) updateData.status = status;
-    if (body.imageUrl !== undefined || body.image_url !== undefined) updateData.imageUrl = body.imageUrl ?? body.image_url;
+    if (body.imageUrl !== undefined || body.image_url !== undefined)
+      updateData.imageUrl = body.imageUrl ?? body.image_url;
     if (body.features !== undefined) updateData.features = body.features;
 
     const offer = await prisma.offer.update({
