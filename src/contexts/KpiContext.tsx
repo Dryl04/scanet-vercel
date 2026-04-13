@@ -229,10 +229,10 @@ export function KpiProvider({ children }: { children: ReactNode }) {
         }
     }, [user, refreshKpis]);
 
-    // Poll for updates every 60 seconds (replacing Supabase realtime)
+    // Poll for updates every 15 seconds (replacing Supabase realtime)
     useEffect(() => {
         if (!user) return;
-        const interval = setInterval(refreshKpis, 60000);
+        const interval = setInterval(refreshKpis, 15000);
         return () => clearInterval(interval);
     }, [user, refreshKpis]);
 

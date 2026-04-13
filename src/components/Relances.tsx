@@ -45,6 +45,13 @@ export default function Relances({ onScheduleNew }: RelancesProps) {
         if (user) loadScheduledEmails();
     }, [user]);
 
+    // Poll for status updates every 30 seconds (replacing Supabase realtime)
+    useEffect(() => {
+        if (!user) return;
+        const interval = setInterval(loadScheduledEmails, 30000);
+        return () => clearInterval(interval);
+    }, [user]);
+
     const loadScheduledEmails = async () => {
         if (!user) return;
         try {

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Plus, TrendingUp, Users, Target, Briefcase, Calendar, DollarSign, Star, ArrowRight, MapPin } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useKpis } from '@/contexts/KpiContext';
+import { useNotifications } from '@/contexts/NotificationContext';
 import { ContactProfile } from './ContactProfile';
 import { AddContactModal } from './AddContactModal';
 import { AddEventModal } from './AddEventModal';
@@ -35,6 +36,7 @@ import type { Contact, Event, ViewType, ViewMode, SortOption } from '@/types';
 export function Dashboard() {
     const { profile, signOut } = useAuth();
     const { globalKpis, refreshKpis, loading: kpisLoading } = useKpis();
+    const { refreshNotifications } = useNotifications();
     const [contacts, setContacts] = useState<Contact[]>([]);
     const [filteredContacts, setFilteredContacts] = useState<Contact[]>([]);
     const [selectedContactId, setSelectedContactId] = useState<string | null>(null);
@@ -61,9 +63,16 @@ export function Dashboard() {
     const [showEventQRModal, setShowEventQRModal] = useState(false);
     const [currentEventForQR, setCurrentEventForQR] = useState<Event | null>(null);
     const [showScheduleEmailModal, setShowScheduleEmailModal] = useState(false);
+    const [eventsRefreshKey, setEventsRefreshKey] = useState(0);
 
     useEffect(() => {
         loadContacts();
+    }, []);
+
+    // Poll contacts for updates every 20 seconds (replacing Supabase realtime)
+    useEffect(() => {
+        const interval = setInterval(loadContacts, 20000);
+        return () => clearInterval(interval);
     }, []);
 
     useEffect(() => {
@@ -189,6 +198,7 @@ export function Dashboard() {
     const handleContactAdded = () => {
         loadContacts();
         refreshKpis();
+        refreshNotifications();
         if (view === 'events') loadEvents();
         setShowAddModal(false);
     };
@@ -312,7 +322,7 @@ export function Dashboard() {
                         </div>
                     )}
 
-                    {view === 'events' && <EventsList onEventClick={setSelectedEventId} onCreateEvent={() => setShowAddEventModal(true)} />}
+                    {view === 'events' && <EventsList onEventClick={setSelectedEventId} onCreateEvent={() => setShowAddEventModal(true)} refreshKey={eventsRefreshKey} />}
                     {view === 'followups' && <Relances onScheduleNew={() => setShowScheduleEmailModal(true)} />}
                     {view === 'opportunities' && <Opportunities onContactSelect={(contactId) => { setSelectedContactId(contactId); setView('contacts'); }} />}
                     {view === 'offers' && <Offers />}
@@ -507,8 +517,8 @@ export function Dashboard() {
             </div>
 
             {showAddModal && <AddContactModal onClose={() => setShowAddModal(false)} onContactAdded={handleContactAdded} onNavigateToEnterprise={() => { setShowAddModal(false); setView('enterprise'); }} />}
-            {showAddEventModal && <AddEventModal onClose={() => setShowAddEventModal(false)} onSuccess={() => { setShowAddEventModal(false); loadEvents(); }} />}
-            {showScanModal && <ScanContactModal onClose={() => setShowScanModal(false)} onContactAdded={() => { setShowScanModal(false); loadContacts(); refreshKpis(); }} />}
+            {showAddEventModal && <AddEventModal onClose={() => setShowAddEventModal(false)} onSuccess={() => { setShowAddEventModal(false); loadEvents(); refreshKpis(); refreshNotifications(); setEventsRefreshKey(prev => prev + 1); }} />}
+            {showScanModal && <ScanContactModal onClose={() => setShowScanModal(false)} onContactAdded={() => { setShowScanModal(false); loadContacts(); refreshKpis(); refreshNotifications(); }} />}
             {showAddOptionsModal && (
                 <AddContactOptionsModal
                     onClose={() => setShowAddOptionsModal(false)}

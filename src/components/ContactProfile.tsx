@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNotifications } from '@/contexts/NotificationContext';
+import { useKpis } from '@/contexts/KpiContext';
 import { PhoneInput } from './PhoneInput';
 import { COUNTRIES } from '@/lib/countries';
 
@@ -96,6 +97,7 @@ const OPPORTUNITY_STATUS = [
 export function ContactProfile({ contactId, onBack, onNavigateToEnterprise }: ContactProfileProps) {
     const { user } = useAuth();
     const { showToast } = useNotifications();
+    const { refreshKpis } = useKpis();
     const [contact, setContact] = useState<Contact | null>(null);
     const [events, setEvents] = useState<ContactEvent[]>([]);
     const [notes, setNotes] = useState<Note[]>([]);
@@ -293,6 +295,7 @@ export function ContactProfile({ contactId, onBack, onNavigateToEnterprise }: Co
             if (!res.ok) throw new Error();
             setContact(editedContact);
             setIsEditing(false);
+            refreshKpis();
         } catch {
             showToast('Erreur', 'Erreur lors de la mise à jour du contact', 'error');
         }
@@ -351,6 +354,7 @@ export function ContactProfile({ contactId, onBack, onNavigateToEnterprise }: Co
         try {
             setDeleting(true);
             await fetch(`/api/contacts/${contact.id}`, { method: 'DELETE' });
+            refreshKpis();
             onBack();
         } catch {
             showToast('Erreur', 'Erreur lors de la suppression du contact', 'error');
@@ -401,6 +405,7 @@ export function ContactProfile({ contactId, onBack, onNavigateToEnterprise }: Co
             setShowOpportunityForm(false);
             setOppTitle(''); setOppAmount(''); setOppDescription('');
             loadContactData();
+            refreshKpis();
         } catch (error) {
             console.error('Error adding opportunity:', error);
         }
@@ -411,6 +416,7 @@ export function ContactProfile({ contactId, onBack, onNavigateToEnterprise }: Co
         try {
             await fetch(`/api/opportunities/${oppId}`, { method: 'DELETE' });
             loadContactData();
+            refreshKpis();
         } catch {
             showToast('Erreur', 'Erreur lors de la suppression', 'error');
         }

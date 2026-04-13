@@ -185,8 +185,8 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
         refreshNotifications();
         loadPreferences();
 
-        // Poll for new notifications every 30 seconds (replacing Supabase realtime)
-        const interval = setInterval(refreshNotifications, 30000);
+        // Poll for new notifications every 10 seconds (replacing Supabase realtime)
+        const interval = setInterval(refreshNotifications, 10000);
         return () => clearInterval(interval);
     }, [user, refreshNotifications, loadPreferences]);
 

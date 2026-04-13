@@ -65,9 +65,10 @@ const calculateEventStatus = (event: Event): string => {
 interface EventsListProps {
     onEventClick: (eventId: string) => void;
     onCreateEvent: () => void;
+    refreshKey?: number;
 }
 
-export function EventsList({ onEventClick, onCreateEvent }: EventsListProps) {
+export function EventsList({ onEventClick, onCreateEvent, refreshKey = 0 }: EventsListProps) {
     const [events, setEvents] = useState<Event[]>([]);
     const [filteredEvents, setFilteredEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
@@ -80,7 +81,7 @@ export function EventsList({ onEventClick, onCreateEvent }: EventsListProps) {
 
     useEffect(() => {
         loadEvents();
-    }, []);
+    }, [refreshKey]);
 
     useEffect(() => {
         filterAndSortEvents();
