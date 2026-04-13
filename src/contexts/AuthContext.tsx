@@ -53,23 +53,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             if (res.ok) {
                 const data = await res.json();
                 if (data) {
-                    // Map camelCase to snake_case for compatibility
+                    // Map both camelCase and snake_case for compatibility
                     setProfile({
                         id: data.id,
                         email: data.email,
-                        full_name: data.fullName,
+                        full_name: data.full_name ?? data.fullName,
                         company: data.company,
-                        job_title: data.jobTitle,
+                        job_title: data.job_title ?? data.jobTitle,
                         phone: data.phone,
                         bio: data.bio,
                         website: data.website,
                         linkedin: data.linkedin,
                         country: data.country,
                         city: data.city,
-                        preferred_currency: data.preferredCurrency || 'EUR',
-                        avatar_url: data.avatarUrl,
-                        created_at: data.createdAt,
-                        updated_at: data.updatedAt,
+                        preferred_currency: data.preferred_currency ?? data.preferredCurrency ?? 'EUR',
+                        avatar_url: data.avatar_url ?? data.avatarUrl,
+                        created_at: data.created_at ?? data.createdAt,
+                        updated_at: data.updated_at ?? data.updatedAt,
                     });
                 }
             }

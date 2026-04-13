@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { toSnakeCase } from "@/lib/apiMappers";
 
 // PUT /api/enterprise/teams/[id]
 export async function PUT(
@@ -53,7 +54,7 @@ export async function PUT(
         parentTeamId: body.parent_team_id,
       },
     });
-    return NextResponse.json(team);
+    return NextResponse.json(toSnakeCase(team));
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(

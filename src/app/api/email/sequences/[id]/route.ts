@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { toSnakeCase } from "@/lib/apiMappers";
 
 // GET /api/email/sequences/[id]
 export async function GET(
@@ -19,7 +20,7 @@ export async function GET(
     });
     if (!sequence)
       return NextResponse.json({ error: "Not found" }, { status: 404 });
-    return NextResponse.json(sequence);
+    return NextResponse.json(toSnakeCase(sequence));
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(
@@ -54,7 +55,7 @@ export async function PUT(
         where: { id },
         data: { isActive: !existing.isActive },
       });
-      return NextResponse.json(sequence);
+      return NextResponse.json(toSnakeCase(sequence));
     }
 
     const { steps, ...sequenceData } = body;
@@ -93,7 +94,7 @@ export async function PUT(
       include: { steps: { orderBy: { stepOrder: "asc" } } },
     });
 
-    return NextResponse.json(updated);
+    return NextResponse.json(toSnakeCase(updated));
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(

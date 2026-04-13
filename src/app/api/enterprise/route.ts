@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { toSnakeCase } from "@/lib/apiMappers";
 
 // GET /api/enterprise - Get all enterprises owned by the current user
 export async function GET() {
@@ -14,7 +15,7 @@ export async function GET() {
       orderBy: { createdAt: "desc" },
     });
 
-    return NextResponse.json(enterprises);
+    return NextResponse.json(enterprises.map(toSnakeCase));
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(
@@ -44,7 +45,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json(enterprise, { status: 201 });
+    return NextResponse.json(toSnakeCase(enterprise), { status: 201 });
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(
@@ -82,7 +83,7 @@ export async function PUT(request: NextRequest) {
       },
     });
 
-    return NextResponse.json(updated);
+    return NextResponse.json(toSnakeCase(updated));
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(

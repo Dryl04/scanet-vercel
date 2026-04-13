@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { toSnakeCase } from "@/lib/apiMappers";
 
 export async function PUT(
   request: NextRequest,
@@ -29,7 +30,7 @@ export async function PUT(
         priority: body.priority,
       },
     });
-    return NextResponse.json(followUp);
+    return NextResponse.json(toSnakeCase(followUp));
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(

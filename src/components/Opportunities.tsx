@@ -226,7 +226,7 @@ export function Opportunities({ onContactSelect }: OpportunitiesProps) {
             const res = await fetch('/api/contacts?sort=full_name');
             if (!res.ok) throw new Error('Failed to fetch contacts');
             const data = await res.json();
-            setContacts((data || []) as Contact[]);
+            setContacts((data.contacts || data || []) as Contact[]);
         } catch (error) {
             console.error('Error fetching contacts:', error);
         }

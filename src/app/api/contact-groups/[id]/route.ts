@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { toSnakeCase } from "@/lib/apiMappers";
 
 // PUT /api/contact-groups/[id]
 export async function PUT(
@@ -48,7 +49,7 @@ export async function PUT(
         color: body.color,
       },
     });
-    return NextResponse.json(group);
+    return NextResponse.json(toSnakeCase(group));
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(

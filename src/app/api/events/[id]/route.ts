@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { syncEventKpis } from "@/lib/eventKpis";
+import { mapEvent, toSnakeCase } from "@/lib/apiMappers";
 
 export async function GET(
   _request: NextRequest,
@@ -38,7 +39,7 @@ export async function GET(
     if (!event)
       return NextResponse.json({ error: "Event not found" }, { status: 404 });
 
-    return NextResponse.json(event);
+    return NextResponse.json(mapEvent(event));
   } catch (error) {
     console.error("Error fetching event:", error);
     return NextResponse.json(
@@ -98,7 +99,7 @@ export async function PUT(
       await syncEventKpis(id);
     }
 
-    return NextResponse.json(event);
+    return NextResponse.json(mapEvent(event));
   } catch (error) {
     console.error("Error updating event:", error);
     return NextResponse.json(
@@ -136,3 +137,6 @@ export async function DELETE(
     );
   }
 }
+
+// PATCH is an alias for PUT
+export { PUT as PATCH };

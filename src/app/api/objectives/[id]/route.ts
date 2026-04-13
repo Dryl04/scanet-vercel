@@ -5,6 +5,7 @@ import {
   refreshAllObjectives,
   calculateObjectiveValue,
 } from "@/lib/objectiveCalculator";
+import { toSnakeCase } from "@/lib/apiMappers";
 
 // GET /api/objectives/[id]
 export async function GET(
@@ -22,7 +23,7 @@ export async function GET(
     });
     if (!objective)
       return NextResponse.json({ error: "Not found" }, { status: 404 });
-    return NextResponse.json(objective);
+    return NextResponse.json(toSnakeCase(objective));
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(
@@ -54,7 +55,7 @@ export async function PUT(
     // Handle special actions
     if (body.action === "refresh") {
       const updated = await refreshAllObjectives(session.user.id);
-      return NextResponse.json(updated);
+      return NextResponse.json(toSnakeCase(updated));
     }
 
     if (body.action === "reactivate") {
@@ -68,7 +69,7 @@ export async function PUT(
           currentValue,
         },
       });
-      return NextResponse.json(objective);
+      return NextResponse.json(toSnakeCase(objective));
     }
 
     if (body.action === "cancel") {
@@ -76,7 +77,7 @@ export async function PUT(
         where: { id },
         data: { status: "cancelled" },
       });
-      return NextResponse.json(objective);
+      return NextResponse.json(toSnakeCase(objective));
     }
 
     const objective = await prisma.personalObjective.update({
@@ -93,7 +94,7 @@ export async function PUT(
             : undefined,
       },
     });
-    return NextResponse.json(objective);
+    return NextResponse.json(toSnakeCase(objective));
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(

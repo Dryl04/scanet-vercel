@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { toSnakeCase } from "@/lib/apiMappers";
 
 // PUT /api/email/scheduled/[id]
 export async function PUT(
@@ -27,7 +28,7 @@ export async function PUT(
         where: { id },
         data: { status: "cancelled" },
       });
-      return NextResponse.json(email);
+      return NextResponse.json(toSnakeCase(email));
     }
 
     const email = await prisma.scheduledEmail.update({
@@ -40,7 +41,7 @@ export async function PUT(
           : undefined,
       },
     });
-    return NextResponse.json(email);
+    return NextResponse.json(toSnakeCase(email));
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(

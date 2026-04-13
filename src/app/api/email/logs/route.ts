@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { toSnakeCase } from "@/lib/apiMappers";
 
 // GET /api/email/logs
 export async function GET(request: NextRequest) {
@@ -22,7 +23,7 @@ export async function GET(request: NextRequest) {
       take: limit,
     });
 
-    return NextResponse.json(logs);
+    return NextResponse.json(logs.map(toSnakeCase));
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { toSnakeCase } from "@/lib/apiMappers";
 
 export async function GET() {
   const session = await auth();
@@ -12,7 +13,7 @@ export async function GET() {
       where: { userId: session.user.id },
       orderBy: { createdAt: "desc" },
     });
-    return NextResponse.json(offers);
+    return NextResponse.json(offers.map(toSnakeCase));
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(
@@ -44,7 +45,7 @@ export async function POST(request: NextRequest) {
         features: body.features || [],
       },
     });
-    return NextResponse.json(offer, { status: 201 });
+    return NextResponse.json(toSnakeCase(offer), { status: 201 });
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(

@@ -5,6 +5,7 @@ import {
   notifyOpportunityStatusChanged,
   notifyHighValueOpportunity,
 } from "@/lib/notifications";
+import { mapOpportunity } from "@/lib/apiMappers";
 
 export async function GET(
   _request: NextRequest,
@@ -22,7 +23,7 @@ export async function GET(
     });
     if (!opportunity)
       return NextResponse.json({ error: "Not found" }, { status: 404 });
-    return NextResponse.json(opportunity);
+    return NextResponse.json(mapOpportunity(opportunity));
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(
@@ -86,7 +87,7 @@ export async function PUT(
       );
     }
 
-    return NextResponse.json(opportunity);
+    return NextResponse.json(mapOpportunity(opportunity));
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(
@@ -121,3 +122,6 @@ export async function DELETE(
     );
   }
 }
+
+// PATCH is an alias for PUT
+export { PUT as PATCH };

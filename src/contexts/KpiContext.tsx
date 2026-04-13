@@ -81,7 +81,8 @@ export function KpiProvider({ children }: { children: ReactNode }) {
         try {
             const res = await fetch('/api/contacts');
             if (!res.ok) throw new Error('Failed to fetch contacts');
-            const contacts = await res.json();
+            const data = await res.json();
+            const contacts = data.contacts || data || [];
 
             return {
                 total: contacts.length,
@@ -144,18 +145,19 @@ export function KpiProvider({ children }: { children: ReactNode }) {
         try {
             const res = await fetch('/api/events');
             if (!res.ok) throw new Error('Failed to fetch events');
-            const data = await res.json();
+            const json = await res.json();
+            const data = json.events || json || [];
             return data.map((e: any) => ({
                 id: e.id,
                 name: e.name,
-                contacts_added: e.contactsAdded || 0,
-                leads_generated: e.leadsGenerated || 0,
-                conversion_rate: e.conversionRate || 0,
-                performance_score: e.performanceScore || 0,
-                people_approached: e.peopleApproached || 0,
-                target_participants: e.targetParticipants || 0,
-                budget: e.budget || 0,
-                revenue: e.revenue || 0,
+                contacts_added: e.contacts_added ?? e.contactsAdded ?? 0,
+                leads_generated: e.leads_generated ?? e.leadsGenerated ?? 0,
+                conversion_rate: e.conversion_rate ?? e.conversionRate ?? 0,
+                performance_score: e.performance_score ?? e.performanceScore ?? 0,
+                people_approached: e.people_approached ?? e.peopleApproached ?? 0,
+                target_participants: e.target_participants ?? e.targetParticipants ?? 0,
+                budget: e.budget ?? 0,
+                revenue: e.revenue ?? 0,
             }));
         } catch (error) {
             console.error('Error loading events:', error);

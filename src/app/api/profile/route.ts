@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { toSnakeCase } from "@/lib/apiMappers";
 
 // PUT /api/profile - Update current user's profile
 export async function PUT(request: NextRequest) {
@@ -43,7 +44,7 @@ export async function PUT(request: NextRequest) {
       },
     });
 
-    return NextResponse.json(profile);
+    return NextResponse.json(toSnakeCase(profile));
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(
@@ -63,7 +64,7 @@ export async function GET() {
     const profile = await prisma.profile.findUnique({
       where: { userId: session.user.id },
     });
-    return NextResponse.json(profile);
+    return NextResponse.json(toSnakeCase(profile));
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(

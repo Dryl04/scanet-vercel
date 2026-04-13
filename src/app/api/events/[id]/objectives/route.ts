@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { toSnakeCase } from "@/lib/apiMappers";
 
 // GET /api/events/[id]/objectives
 export async function GET(
@@ -24,7 +25,7 @@ export async function GET(
       orderBy: [{ priority: "asc" }, { createdAt: "desc" }],
     });
 
-    return NextResponse.json(objectives);
+    return NextResponse.json(objectives.map(toSnakeCase));
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(
@@ -67,7 +68,7 @@ export async function POST(
       },
     });
 
-    return NextResponse.json(objective, { status: 201 });
+    return NextResponse.json(toSnakeCase(objective), { status: 201 });
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(

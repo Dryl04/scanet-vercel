@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { toSnakeCase } from "@/lib/apiMappers";
 
 export async function GET(
   _request: NextRequest,
@@ -18,7 +19,7 @@ export async function GET(
     });
     if (!offer)
       return NextResponse.json({ error: "Not found" }, { status: 404 });
-    return NextResponse.json(offer);
+    return NextResponse.json(toSnakeCase(offer));
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(
@@ -60,7 +61,7 @@ export async function PUT(
         features: body.features,
       },
     });
-    return NextResponse.json(offer);
+    return NextResponse.json(toSnakeCase(offer));
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(

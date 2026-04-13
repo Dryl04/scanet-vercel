@@ -84,20 +84,20 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
             const res = await fetch('/api/notifications');
             if (res.ok) {
                 const data = await res.json();
-                // Map camelCase to snake_case for compatibility
+                // Map both camelCase and snake_case for compatibility
                 const mapped = (data.notifications || []).map((n: any) => ({
                     id: n.id,
-                    user_id: n.userId,
+                    user_id: n.user_id ?? n.userId,
                     type: n.type,
                     category: n.category,
                     title: n.title,
                     message: n.message,
-                    action_url: n.actionUrl,
+                    action_url: n.action_url ?? n.actionUrl,
                     read: n.read,
                     priority: n.priority,
                     metadata: n.metadata,
-                    expires_at: n.expiresAt,
-                    created_at: n.createdAt,
+                    expires_at: n.expires_at ?? n.expiresAt,
+                    created_at: n.created_at ?? n.createdAt,
                 }));
                 setNotifications(mapped);
                 setUnreadCount(data.unreadCount || 0);

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { toSnakeCase } from "@/lib/apiMappers";
 
 // PATCH /api/contacts/[id]/interactions/[noteId]
 export async function PATCH(
@@ -27,7 +28,7 @@ export async function PATCH(
       },
     });
 
-    return NextResponse.json(note);
+    return NextResponse.json(toSnakeCase(note));
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(

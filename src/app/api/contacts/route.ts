@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { notifyContactCreated } from "@/lib/notifications";
 import { syncEventKpis } from "@/lib/eventKpis";
+import { mapContact } from "@/lib/apiMappers";
 
 export async function GET() {
   const session = await auth();
@@ -23,7 +24,7 @@ export async function GET() {
       },
     });
 
-    return NextResponse.json(contacts);
+    return NextResponse.json({ contacts: contacts.map(mapContact) });
   } catch (error) {
     console.error("Error fetching contacts:", error);
     return NextResponse.json(
@@ -78,7 +79,7 @@ export async function POST(request: NextRequest) {
 
     await notifyContactCreated(session.user.id, contact.fullName, contact.id);
 
-    return NextResponse.json(contact, { status: 201 });
+    return NextResponse.json({ contact: mapContact(contact) }, { status: 201 });
   } catch (error) {
     console.error("Error creating contact:", error);
     return NextResponse.json(

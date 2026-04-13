@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { toSnakeCase } from "@/lib/apiMappers";
 
 // GET /api/email/scheduled - List scheduled emails
 export async function GET() {
@@ -25,7 +26,7 @@ export async function GET() {
       orderBy: { scheduledFor: "desc" },
     });
 
-    return NextResponse.json(emails);
+    return NextResponse.json(emails.map(toSnakeCase));
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(
@@ -67,7 +68,7 @@ export async function POST(request: NextRequest) {
       include: { recipients: true },
     });
 
-    return NextResponse.json(email, { status: 201 });
+    return NextResponse.json(toSnakeCase(email), { status: 201 });
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(

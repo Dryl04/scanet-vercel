@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { notifyContactUpdated } from "@/lib/notifications";
+import { mapContact, toSnakeCase } from "@/lib/apiMappers";
 
 export async function GET(
   _request: NextRequest,
@@ -28,7 +29,7 @@ export async function GET(
     if (!contact)
       return NextResponse.json({ error: "Contact not found" }, { status: 404 });
 
-    return NextResponse.json(contact);
+    return NextResponse.json(mapContact(contact));
   } catch (error) {
     console.error("Error fetching contact:", error);
     return NextResponse.json(
@@ -87,7 +88,7 @@ export async function PUT(
 
     await notifyContactUpdated(session.user.id, contact.fullName, contact.id);
 
-    return NextResponse.json(contact);
+    return NextResponse.json(mapContact(contact));
   } catch (error) {
     console.error("Error updating contact:", error);
     return NextResponse.json(
@@ -95,6 +96,14 @@ export async function PUT(
       { status: 500 },
     );
   }
+}
+
+// PATCH is used by ContactProfile, alias to same logic as PUT
+export async function PATCH(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> },
+) {
+  return PUT(request, context);
 }
 
 export async function DELETE(
