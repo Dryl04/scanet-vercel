@@ -32,7 +32,23 @@ export function PersonalObjectives({ compact = false }: PersonalObjectivesProps)
             const res = await fetch('/api/objectives');
             if (!res.ok) throw new Error('Failed to load objectives');
             const data = await res.json();
-            setObjectives(data.objectives || []);
+            const raw = data.objectives || [];
+            // Map snake_case API response to camelCase PersonalObjective interface
+            setObjectives(raw.map((o: any) => ({
+                ...o,
+                objectiveType: o.objective_type ?? o.objectiveType,
+                targetValue: o.target_value ?? o.targetValue ?? 0,
+                currentValue: o.current_value ?? o.currentValue ?? 0,
+                contactStatusFilter: o.contact_status_filter ?? o.contactStatusFilter,
+                periodType: o.period_type ?? o.periodType,
+                periodStart: o.period_start ?? o.periodStart,
+                periodEnd: o.period_end ?? o.periodEnd,
+                eventId: o.event_id ?? o.eventId,
+                achievedAt: o.achieved_at ?? o.achievedAt,
+                createdAt: o.created_at ?? o.createdAt,
+                updatedAt: o.updated_at ?? o.updatedAt,
+                userId: o.user_id ?? o.userId,
+            })));
         } catch (error) {
             console.error('Error loading objectives:', error);
         } finally {
